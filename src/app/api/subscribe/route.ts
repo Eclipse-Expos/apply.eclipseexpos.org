@@ -1,13 +1,13 @@
-import { NextApiRequest, NextApiResponse } from "next";
 import { Response } from "@/lib/responses";
 import { prisma } from "@/lib/prisma";
 import { sendEmail } from "@/lib/email";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function POST(req: NextApiRequest, res: NextApiResponse) {
-  const { name, email } = req.body;
+export async function POST(req: NextRequest) {
+  const { name, email } = await req.json();
 
   if (!email || !name) {
-    return res.status(400).json(Response.InvalidBody);
+    return NextResponse.json(Response.InvalidBody, { status: 400 });
   }
 
   try {
@@ -21,8 +21,8 @@ export async function POST(req: NextApiRequest, res: NextApiResponse) {
     await sendEmail(email, "", ""); // TODO: Eventually pull subject + body from db
   } catch (err) {
     console.error(err);
-    return res.status(500).json(Response.InternalError);
+    return NextResponse.json(Response.InternalError, { status: 500 });
   }
 
-  res.status(200).json(Response.Success);
+  return NextResponse.json(Response.Success, { status: 200 });
 }
