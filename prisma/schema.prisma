@@ -10,13 +10,11 @@ generator client {
 
 // Model for storing user data
 model User {
-  id        Int      @id @default(autoincrement())
+  id        String   @id @default(uuid())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   email     String   @unique
   name      String   @default("")
-  phone     String   @default("")
-  secret    String   @unique
 }
 
 // npx prisma migrate dev --name init
