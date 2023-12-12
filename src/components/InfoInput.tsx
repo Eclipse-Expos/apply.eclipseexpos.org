@@ -1,7 +1,6 @@
-import { Dispatch, SetStateAction, useState } from "react";
-import Image from "next/image";
-import Input from "./Input";
-import { LoadingRelative } from "./Loading";
+import { useState } from "react";
+import { LoadingRelative } from "@/components/Loading";
+import Input from "@/components/Input";
 
 // Status of the input
 enum Status {
@@ -16,32 +15,35 @@ enum Status {
  */
 export default function InfoInput(): JSX.Element {
   const [status, setStatus] = useState<Status>(Status.DEFAULT);
-  const [data, setData] = useState<Data>({
-    email: "",
-    phone: "",
-    name: "",
-  });
+  const [email, setEmail] = useState<string>("");
+  const [name, setName] = useState<string>("");
 
   return (
     <div className="relative flex flex-col items-center justify-center gap-4 p-4">
-      <Image
-        src="/images/logo-white.png"
-        width={700}
-        height={700}
-        alt={"..."}
-      />
-
       {status === Status.DEFAULT && (
-        <Inputs
-          updateData={(key: string, value: string) =>
-            setData({ ...data, [key]: value })
-          }
-          onSubscribe={async () => {
-            setStatus(Status.LOADING);
-            const success = await addUserToDatabase(data);
-            setStatus(success ? Status.SUCCESS : Status.DEFAULT);
-          }}
-        />
+        <>
+          <Input
+            className="w-72 sm:w-[32rem]"
+            placeholder="Name"
+            onChange={(value) => setName(value)}
+          />
+          <Input
+            className="w-72 sm:w-[32rem]"
+            placeholder="Email"
+            onChange={(value) => setEmail(value)}
+          />
+          <button
+            onClick={async () => {
+              setStatus(Status.LOADING);
+
+              const success = await addUserToDatabase(email, name);
+              setStatus(success ? Status.SUCCESS : Status.DEFAULT);
+            }}
+            className="hover:bg-background border-primary bg-primary outline-primary hover:border-primary hover:text-primary hover:outline-primary w-72 border-2 px-2 py-3 text-sm tracking-wider text-slate-900 outline-2 duration-300 ease-in-out disabled:opacity-50 sm:w-[32rem]"
+          >
+            Subscribe
+          </button>
+        </>
       )}
 
       {status === Status.SUCCESS && <SuccessMessage />}
@@ -51,55 +53,17 @@ export default function InfoInput(): JSX.Element {
 }
 
 /**
- * Inputs Component
- * @param props The props to pass to the component
- * @returns JSX.Element
- */
-interface InputsProps {
-  updateData: (key: string, value: string) => void;
-  onSubscribe: () => Promise<void>;
-}
-function Inputs(props: InputsProps): JSX.Element {
-  return (
-    <>
-      <Input
-        className="w-72 sm:w-[32rem]"
-        placeholder="Name"
-        onChange={(value) => props.updateData("name", value)}
-      />
-      <Input
-        className="w-72 sm:w-[32rem]"
-        placeholder="Email"
-        onChange={(value) => props.updateData("email", value)}
-      />
-      <Input
-        className="w-72 sm:w-[32rem]"
-        placeholder="Phone"
-        onChange={(value) => props.updateData("phone", value)}
-      />
-      <button
-        onClick={async () => await props.onSubscribe()}
-        className="w-72 border border-white bg-white px-2 py-3 text-sm tracking-wider text-slate-900 outline-2 outline-white duration-300 ease-in-out hover:border-white hover:bg-black hover:text-white hover:outline-white disabled:opacity-50 sm:w-[32rem]"
-      >
-        Subscribe
-      </button>
-    </>
-  );
-}
-
-/**
  * Data to send to the server
- * @param data The data to send to the server
+ * @param email Email
+ * @param name Name
  */
-interface Data {
-  email: string;
-  phone: string;
-  name: string;
-}
-async function addUserToDatabase(data: Data) {
+async function addUserToDatabase(email: string, name: string) {
   const response = await fetch("/api/subscribe", {
     method: "POST",
-    body: JSON.stringify(data),
+    body: JSON.stringify({
+      email,
+      name,
+    }),
     headers: {
       "Content-Type": "application/json",
     },
@@ -116,10 +80,10 @@ async function addUserToDatabase(data: Data) {
 function SuccessMessage(): JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center gap-2 tracking-wide">
-      <h1 className="text-4xl font-black tracking-wide text-white">
+      <h1 className="text-primary text-4xl font-black tracking-wide">
         Thanks for subscribing!
       </h1>
-      <p className="mt-1 text-white">Let&#39;s break some records.</p>
+      <p className="text-primary mt-1">Let&#39;s break some records.</p>
     </div>
   );
 }
