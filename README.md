@@ -71,3 +71,5 @@ _Note: You will have to create a .env file from the template_
    ```
 
 4. Open a pull request to the `dev` branch
+
+5. Associate the pull request with the relevant issue (if applicable)
