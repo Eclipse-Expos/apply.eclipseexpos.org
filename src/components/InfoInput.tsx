@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { LoadingRelative } from "@/components/Loading";
 import Input from "@/components/Input";
@@ -39,7 +41,7 @@ export default function InfoInput(): JSX.Element {
               const success = await addUserToDatabase(email, name);
               setStatus(success ? Status.SUCCESS : Status.DEFAULT);
             }}
-            className="hover:bg-background border-primary bg-primary outline-primary hover:border-primary hover:text-primary hover:outline-primary w-72 border-2 px-2 py-3 text-sm tracking-wider text-slate-900 outline-2 duration-300 ease-in-out disabled:opacity-50 sm:w-[32rem]"
+            className="w-72 border-2 border-primary bg-primary px-2 py-3 text-sm tracking-wider text-slate-900 outline-2 outline-primary duration-300 ease-in-out hover:border-primary hover:bg-background hover:text-primary hover:outline-primary disabled:opacity-50 sm:w-[32rem]"
           >
             Subscribe
           </button>
@@ -80,10 +82,10 @@ async function addUserToDatabase(email: string, name: string) {
 function SuccessMessage(): JSX.Element {
   return (
     <div className="flex flex-col items-center justify-center gap-2 tracking-wide">
-      <h1 className="text-primary text-4xl font-black tracking-wide">
+      <h1 className="text-4xl font-black tracking-wide text-primary">
         Thanks for subscribing!
       </h1>
-      <p className="text-primary mt-1">Let&#39;s break some records.</p>
+      <p className="mt-1 text-primary">Let&#39;s break some records.</p>
     </div>
   );
 }

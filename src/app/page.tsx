@@ -1,5 +1,3 @@
-"use client";
-
 import InfoInput from "@/components/InfoInput";
 import stars from "@/styles/stars.module.scss";
 import Image from "next/image";
