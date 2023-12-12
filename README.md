@@ -31,7 +31,7 @@ https://apply.eclipseexpos.org/
 3. Run the database container
 
    ```sh
-   docker compose up application -d
+   docker compose up database -d
    ```
 
 4. Run prisma migrations
