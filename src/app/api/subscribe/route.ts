@@ -17,8 +17,8 @@ export async function POST(req: NextRequest) {
         email,
       },
     });
-
-    await sendEmail(email, "", ""); // TODO: Eventually pull subject + body from db
+    
+    await sendEmail(email, "test", "test"); // TODO: Eventually pull subject + body from db
   } catch (err) {
     console.error(err);
     return NextResponse.json(Response.InternalError, { status: 500 });
