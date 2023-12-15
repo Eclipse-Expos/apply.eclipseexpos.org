@@ -14,11 +14,12 @@ export async function sendEmail(email: string, subject: string, body: string) {
   // message to send
   const msg = {
     to: email,
-    from: "aditya.makkar@eclipseexpos.org" as string,
+    from: process.env.SENDGRID_SENDER_ID as string,
     subject: subject,
     text: body,
     html: body,
   };
+
 
   try {
     await sgMail.send(msg);
