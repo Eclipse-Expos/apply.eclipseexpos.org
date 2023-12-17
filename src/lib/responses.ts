@@ -13,6 +13,18 @@ export class Response {
     };
   }
 
+  static get InvalidQueryParams() {
+    const id = base64encode(Math.random().toString());
+    const timestamp = Date.now();
+
+    return {
+      success: false,
+      message: "Invalid query parameters",
+      timestamp,
+      id,
+    };
+  }
+
   static get InternalError() {
     const id = base64encode(Math.random().toString());
     const timestamp = Date.now();
