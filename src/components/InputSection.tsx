@@ -4,6 +4,7 @@ import { useState } from "react";
 import { LoadingRelative } from "@/components/Loading";
 import Input from "@/components/Input";
 import { base64encode } from "@/lib/crypto";
+import SuccessMessage from "./SuccessMessage";
 
 // Status of the input
 enum Status {
@@ -72,7 +73,7 @@ export default function InfoInput(): JSX.Element {
 }
 
 /**
- * Data to send to the server
+ * Add the user to the database via the API
  * @param email Email
  * @param name Name
  * @returns boolean
@@ -112,19 +113,4 @@ async function userAlreadyExists(email: string) {
   // If the response is not ok, return true - this is because
   // the user is then already in the database
   return !response.ok;
-}
-
-/**
- * Success Message
- * @returns JSX.Element
- */
-function SuccessMessage(): JSX.Element {
-  return (
-    <div className="flex flex-col items-center justify-center gap-2 tracking-wide">
-      <h1 className="text-4xl font-black tracking-wide text-primary">
-        Thanks for subscribing!
-      </h1>
-      <p className="mt-1 text-primary">Let&#39;s break some records.</p>
-    </div>
-  );
 }
