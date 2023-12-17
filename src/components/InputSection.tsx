@@ -31,13 +31,13 @@ export default function InfoInput(): JSX.Element {
             type="text"
             className="w-72 sm:w-[32rem]"
             placeholder="Name"
-            onChange={(value) => setName(value)}
+            onChange={(value: string) => setName(value)}
           />
           <Input
             type="email"
             className="w-72 sm:w-[32rem]"
             placeholder="Email"
-            onChange={(value) => setEmail(value)}
+            onChange={(value: string) => setEmail(value)}
           />
           <button
             onClick={async () => {
