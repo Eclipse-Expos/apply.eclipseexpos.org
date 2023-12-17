@@ -13,7 +13,7 @@ services:
       - MYSQL_DATABASE=${MYSQL_DATABASE}
       - TZ=${TZ}
     volumes:
-      - ${DB_PATH}:/var/lib/mysql
+      - ${DB_PATH}=/var/lib/mysql
 
   application:
     build:
