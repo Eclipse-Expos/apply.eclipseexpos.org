@@ -25,11 +25,13 @@ export default function InfoInput(): JSX.Element {
       {status === Status.DEFAULT && (
         <>
           <Input
+            type="text"
             className="w-72 sm:w-[32rem]"
             placeholder="Name"
             onChange={(value) => setName(value)}
           />
           <Input
+            type="email"
             className="w-72 sm:w-[32rem]"
             placeholder="Email"
             onChange={(value) => setEmail(value)}
