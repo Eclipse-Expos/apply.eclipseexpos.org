@@ -3,12 +3,13 @@
 import { cn } from "@/utils/cn";
 import { useState } from "react";
 
+type InputType = "text" | "email" | "password";
 type InputProps = {
   placeholder: string;
   defaultValue?: string;
   className?: string;
   name?: string;
-  type?: "text" | "email" | "password";
+  type?: InputType;
   maxLength?: number;
   disabled?: boolean;
   required?: boolean;
@@ -21,9 +22,9 @@ export default function Input(props: InputProps) {
   return (
     <div className={cn("group relative", props.className)}>
       <input
+        className="peer w-full rounded-none border-2 border-primary bg-background p-3 font-sans font-light text-primary outline-none transition-all duration-200 ease-out placeholder:opacity-50 focus:border-primary disabled:opacity-50"
         type={props.type}
         disabled={props.disabled}
-        className="peer w-full rounded-none border-2 border-primary bg-background p-3 font-sans font-light text-primary outline-none transition-all duration-200 ease-out placeholder:opacity-50 focus:border-primary disabled:opacity-50"
         maxLength={props.maxLength}
         required={props.required}
         spellCheck={true}

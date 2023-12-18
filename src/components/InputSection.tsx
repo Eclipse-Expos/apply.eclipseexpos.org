@@ -30,12 +30,14 @@ export default function InfoInput(): JSX.Element {
           <Input
             type="text"
             className="w-72 sm:w-[32rem]"
+            required={true}
             placeholder="Name"
             onChange={(value: string) => setName(value)}
           />
           <Input
             type="email"
             className="w-72 sm:w-[32rem]"
+            required={true}
             placeholder="Email"
             onChange={(value: string) => setEmail(value)}
           />
@@ -52,7 +54,7 @@ export default function InfoInput(): JSX.Element {
 
               // Add the user to the database
               const success = await addUserToDatabase(email, name);
-              setStatus(success ? Status.SUCCESS : Status.DEFAULT);
+              setStatus(success ? Status.SUCCESS : Status.ERROR);
             }}
             className="w-72 border-2 border-primary bg-primary px-2 py-3 text-sm tracking-wider text-slate-900 outline-2 outline-primary duration-300 ease-in-out hover:border-primary hover:bg-background hover:text-primary hover:outline-primary disabled:opacity-50 sm:w-[32rem]"
           >
@@ -63,7 +65,7 @@ export default function InfoInput(): JSX.Element {
 
       {status === Status.ERROR && (
         <p className="text-center text-sm text-red-600 lg:text-base">
-          You&#39;re already subscribed! Check your email for more information.
+          An error has occurred. Please try again with a different email.
         </p>
       )}
       {status === Status.SUCCESS && <SuccessMessage />}
@@ -79,19 +81,24 @@ export default function InfoInput(): JSX.Element {
  * @returns boolean
  */
 async function addUserToDatabase(email: string, name: string) {
-  const response = await fetch("/api/subscribe", {
-    method: "POST",
-    body: JSON.stringify({
-      email,
-      name,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
+  // Request headers
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  // Request body
+  const body = JSON.stringify({
+    email,
+    name,
   });
 
-  const json = await response.json();
-  return json && json.success;
+  return await fetch("api/subscribe", {
+    method: "POST",
+    headers,
+    body,
+  })
+    .then((res) => res.json())
+    .then((json) => json.success);
 }
 
 /**
@@ -101,16 +108,17 @@ async function addUserToDatabase(email: string, name: string) {
  * @returns boolean
  */
 async function userAlreadyExists(email: string) {
-  const id = base64encode(email);
+  const id = base64encode(email); // Encode the email
 
-  const response = await fetch(`/api/users/${id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
+  // Request headers
+  const headers = {
+    "Content-Type": "application/json",
+  };
 
   // If the response is ok, return true - this is because
   // the user is then already in the database
-  return response.ok;
+  return await fetch(`/api/users/${id}`, {
+    method: "GET",
+    headers,
+  }).then((res) => res.ok);
 }

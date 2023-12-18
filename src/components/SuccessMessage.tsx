@@ -1,5 +1,5 @@
 /**
- * Success Message for the info inputs
+ * Success Message for the input section
  * @returns JSX.Element
  */
 export default function SuccessMessage(): JSX.Element {
