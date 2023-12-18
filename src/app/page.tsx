@@ -1,4 +1,5 @@
 import InputSection from "@/components/InputSection";
+import MainWrapper from "@/components/Main";
 import StarBackground from "@/components/StarBackground";
 import Image from "next/image";
 
@@ -7,7 +8,7 @@ export default function Home() {
     <>
       <StarBackground />
 
-      <main className="flex min-h-screen flex-col items-center justify-center p-24">
+      <MainWrapper>
         <Image
           src="/images/logo-white.png"
           width={700}
@@ -18,7 +19,7 @@ export default function Home() {
         />
 
         <InputSection />
-      </main>
+      </MainWrapper>
     </>
   );
 }
