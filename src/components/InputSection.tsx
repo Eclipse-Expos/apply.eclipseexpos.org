@@ -5,6 +5,7 @@ import { LoadingRelative } from "@/components/Loading";
 import Input from "@/components/Input";
 import { base64encode } from "@/lib/crypto";
 import SuccessMessage from "./SuccessMessage";
+import ErrorMessage from "./ErrorMessage";
 
 // Status of the input
 enum Status {
@@ -13,6 +14,7 @@ enum Status {
   ERROR, // Requires inputs. Shows error message at bottom.
   SUCCESS, // Shows success message
   ALREADY_SUBSCRIBED, // Requires inputs. Shows error message at bottom.
+  EMPTY_FIELDS, // Requires inputs. Shows error message at bottom.
 }
 
 /**
@@ -46,6 +48,11 @@ export default function InfoInput(): JSX.Element {
             onClick={async () => {
               setStatus(Status.LOADING);
 
+              if (!email || !name) {
+                setStatus(Status.EMPTY_FIELDS);
+                return;
+              }
+
               // Check if the user already exists
               const userExists = await userAlreadyExists(email);
               if (userExists) {
@@ -65,14 +72,17 @@ export default function InfoInput(): JSX.Element {
       )}
 
       {status === Status.ERROR && (
-        <p className="text-center text-sm text-red-600 lg:text-base">
+        <ErrorMessage>
           An error has occurred. Please try again with a different email.
-        </p>
+        </ErrorMessage>
       )}
       {status === Status.ALREADY_SUBSCRIBED && (
-        <p className="text-center text-sm text-red-600 lg:text-base">
+        <ErrorMessage>
           You are already subscribed! Check your email for more information.
-        </p>
+        </ErrorMessage>
+      )}
+      {status === Status.EMPTY_FIELDS && (
+        <ErrorMessage>Please fill out all fields.</ErrorMessage>
       )}
       {status === Status.SUCCESS && <SuccessMessage />}
       {status === Status.LOADING && <LoadingRelative className="mt-10" />}
