@@ -4,8 +4,9 @@ import { useState } from "react";
 import { LoadingRelative } from "@/components/Loading";
 import Input from "@/components/Input";
 import { base64encode } from "@/lib/crypto";
-import SuccessMessage from "./SuccessMessage";
-import ErrorMessage from "./ErrorMessage";
+import SuccessMessage from "@/components/SuccessMessage";
+import ErrorMessage from "@/components/ErrorMessage";
+import Button from "./Button";
 
 // Status of the input
 enum Status {
@@ -26,6 +27,30 @@ export default function InfoInput(): JSX.Element {
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
 
+  /**
+   * When the user clicks the subscribe button
+   * @returns void
+   */
+  const onSubscribe = async (): Promise<void> => {
+    setStatus(Status.LOADING);
+
+    if (!email || !name) {
+      setStatus(Status.EMPTY_FIELDS);
+      return;
+    }
+
+    // Check if the user already exists
+    const userExists = await userAlreadyExists(email);
+    if (userExists) {
+      setStatus(Status.ALREADY_SUBSCRIBED);
+      return;
+    }
+
+    // Add the user to the database
+    const success = await addUserToDatabase(email, name);
+    setStatus(success ? Status.SUCCESS : Status.ERROR);
+  };
+
   return (
     <div className="relative flex flex-col items-center justify-center gap-4 p-4">
       {status !== Status.SUCCESS && status !== Status.LOADING && (
@@ -44,30 +69,12 @@ export default function InfoInput(): JSX.Element {
             placeholder="Email"
             onChange={(value: string) => setEmail(value)}
           />
-          <button
-            onClick={async () => {
-              setStatus(Status.LOADING);
-
-              if (!email || !name) {
-                setStatus(Status.EMPTY_FIELDS);
-                return;
-              }
-
-              // Check if the user already exists
-              const userExists = await userAlreadyExists(email);
-              if (userExists) {
-                setStatus(Status.ALREADY_SUBSCRIBED);
-                return;
-              }
-
-              // Add the user to the database
-              const success = await addUserToDatabase(email, name);
-              setStatus(success ? Status.SUCCESS : Status.ERROR);
-            }}
-            className="w-72 border-2 border-primary bg-primary px-2 py-3 text-sm tracking-wider text-slate-900 outline-2 outline-primary duration-300 ease-in-out hover:border-primary hover:bg-background hover:text-primary hover:outline-primary disabled:opacity-50 sm:w-[32rem]"
+          <Button
+            className="w-72 sm:w-[32rem]"
+            onClick={async () => await onSubscribe()}
           >
             Subscribe
-          </button>
+          </Button>
         </>
       )}
 
