@@ -60,4 +60,16 @@ export class Response {
       id,
     };
   }
+
+  static get NotFound() {
+    const id = base64encode(Math.random().toString());
+    const timestamp = Date.now();
+
+    return {
+      success: false,
+      message: "Not found",
+      timestamp,
+      id,
+    };
+  }
 }

@@ -110,7 +110,7 @@ async function userAlreadyExists(email: string) {
     },
   });
 
-  // If the response is not ok, return true - this is because
+  // If the response is ok, return true - this is because
   // the user is then already in the database
-  return !response.ok;
+  return response.ok;
 }

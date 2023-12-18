@@ -21,9 +21,11 @@ export async function GET(_: NextRequest, { params }: any) {
     },
   });
 
+  console.log(user);
+
   // If the user doesn't exist, return an error
   if (!user) {
-    return NextResponse.json(Response.InternalError, { status: 500 });
+    return NextResponse.json(Response.NotFound, { status: 404 });
   }
 
   // Return the user and the success json response
