@@ -8,10 +8,11 @@ import SuccessMessage from "./SuccessMessage";
 
 // Status of the input
 enum Status {
-  DEFAULT,
-  LOADING,
-  ERROR,
-  SUCCESS,
+  DEFAULT, // Inputs
+  LOADING, // Shows loading components.
+  ERROR, // Requires inputs. Shows error message at bottom.
+  SUCCESS, // Shows success message
+  ALREADY_SUBSCRIBED, // Requires inputs. Shows error message at bottom.
 }
 
 /**
@@ -25,7 +26,7 @@ export default function InfoInput(): JSX.Element {
 
   return (
     <div className="relative flex flex-col items-center justify-center gap-4 p-4">
-      {status === Status.DEFAULT && (
+      {status !== Status.SUCCESS && status !== Status.LOADING && (
         <>
           <Input
             type="text"
@@ -48,7 +49,7 @@ export default function InfoInput(): JSX.Element {
               // Check if the user already exists
               const userExists = await userAlreadyExists(email);
               if (userExists) {
-                setStatus(Status.ERROR);
+                setStatus(Status.ALREADY_SUBSCRIBED);
                 return;
               }
 
@@ -66,6 +67,11 @@ export default function InfoInput(): JSX.Element {
       {status === Status.ERROR && (
         <p className="text-center text-sm text-red-600 lg:text-base">
           An error has occurred. Please try again with a different email.
+        </p>
+      )}
+      {status === Status.ALREADY_SUBSCRIBED && (
+        <p className="text-center text-sm text-red-600 lg:text-base">
+          You are already subscribed! Check your email for more information.
         </p>
       )}
       {status === Status.SUCCESS && <SuccessMessage />}
