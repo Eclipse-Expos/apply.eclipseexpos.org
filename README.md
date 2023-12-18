@@ -31,7 +31,7 @@ https://apply.eclipseexpos.org/
 3. Run the database container
 
    ```sh
-   docker compose up application -d
+   docker compose up database -d
    ```
 
 4. Run prisma migrations
@@ -71,3 +71,5 @@ _Note: You will have to create a .env file from the template_
    ```
 
 4. Open a pull request to the `dev` branch
+
+5. Associate the pull request with the relevant issue (if applicable)

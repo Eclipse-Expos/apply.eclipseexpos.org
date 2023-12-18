@@ -2,18 +2,16 @@ version: "3.3"
 
 services:
   database:
-    image: mysql:8.1.0
+    image: postgres:16
     ports:
-      - "3306:3306"
-    command: --default-authentication-plugin=mysql_native_password
+      - "5432:5432"
     restart: always
     environment:
-      - MYSQL_ROOT_HOST=${MYSQL_ROOT_HOST}
-      - MYSQL_ROOT_PASSWORD=${MYSQL_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - POSTGRES_PASSWORD=${MYSQL_PASSWORD}
+      - POSTGRES_DB=${MYSQL_DATABASE}
       - TZ=${TZ}
     volumes:
-      - ${DB_PATH}:/var/lib/mysql
+      - ${DB_PATH}:/var/lib/postgresql/data
 
   application:
     build:
