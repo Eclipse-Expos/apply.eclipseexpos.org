@@ -13,7 +13,9 @@ export default function Home() {
           src="/images/logo-white.png"
           width={700}
           height={700}
-          alt={"..."}
+          alt={"Eclipse Expos"}
+          priority={true}
+          quality={100}
         />
         <InfoInput />
       </main>
