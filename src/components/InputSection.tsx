@@ -34,6 +34,7 @@ export default function InfoInput(): JSX.Element {
   const onSubscribe = async (): Promise<void> => {
     setStatus(Status.LOADING);
 
+    // Check if the user has filled out all fields
     if (!email || !name) {
       setStatus(Status.EMPTY_FIELDS);
       return;
