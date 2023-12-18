@@ -21,8 +21,6 @@ export async function GET(_: NextRequest, { params }: any) {
     },
   });
 
-  console.log(user);
-
   // If the user doesn't exist, return an error
   if (!user) {
     return NextResponse.json(Response.NotFound, { status: 404 });
