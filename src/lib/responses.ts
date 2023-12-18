@@ -13,6 +13,18 @@ export class Response {
     };
   }
 
+  static get InvalidQueryParams() {
+    const id = base64encode(Math.random().toString());
+    const timestamp = Date.now();
+
+    return {
+      success: false,
+      message: "Invalid query parameters",
+      timestamp,
+      id,
+    };
+  }
+
   static get InternalError() {
     const id = base64encode(Math.random().toString());
     const timestamp = Date.now();
@@ -44,6 +56,18 @@ export class Response {
     return {
       success: false,
       message: "Method not allowed",
+      timestamp,
+      id,
+    };
+  }
+
+  static get NotFound() {
+    const id = base64encode(Math.random().toString());
+    const timestamp = Date.now();
+
+    return {
+      success: false,
+      message: "Not found",
       timestamp,
       id,
     };

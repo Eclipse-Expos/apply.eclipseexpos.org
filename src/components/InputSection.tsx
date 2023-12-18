@@ -3,11 +3,14 @@
 import { useState } from "react";
 import { LoadingRelative } from "@/components/Loading";
 import Input from "@/components/Input";
+import { base64encode } from "@/lib/crypto";
+import SuccessMessage from "./SuccessMessage";
 
 // Status of the input
 enum Status {
   DEFAULT,
   LOADING,
+  ERROR,
   SUCCESS,
 }
 
@@ -25,19 +28,29 @@ export default function InfoInput(): JSX.Element {
       {status === Status.DEFAULT && (
         <>
           <Input
+            type="text"
             className="w-72 sm:w-[32rem]"
             placeholder="Name"
-            onChange={(value) => setName(value)}
+            onChange={(value: string) => setName(value)}
           />
           <Input
+            type="email"
             className="w-72 sm:w-[32rem]"
             placeholder="Email"
-            onChange={(value) => setEmail(value)}
+            onChange={(value: string) => setEmail(value)}
           />
           <button
             onClick={async () => {
               setStatus(Status.LOADING);
 
+              // Check if the user already exists
+              const userExists = await userAlreadyExists(email);
+              if (userExists) {
+                setStatus(Status.ERROR);
+                return;
+              }
+
+              // Add the user to the database
               const success = await addUserToDatabase(email, name);
               setStatus(success ? Status.SUCCESS : Status.DEFAULT);
             }}
@@ -48,6 +61,11 @@ export default function InfoInput(): JSX.Element {
         </>
       )}
 
+      {status === Status.ERROR && (
+        <p className="text-center text-sm text-red-600 lg:text-base">
+          You&#39;re already subscribed! Check your email for more information.
+        </p>
+      )}
       {status === Status.SUCCESS && <SuccessMessage />}
       {status === Status.LOADING && <LoadingRelative className="mt-10" />}
     </div>
@@ -55,9 +73,10 @@ export default function InfoInput(): JSX.Element {
 }
 
 /**
- * Data to send to the server
+ * Add the user to the database via the API
  * @param email Email
  * @param name Name
+ * @returns boolean
  */
 async function addUserToDatabase(email: string, name: string) {
   const response = await fetch("/api/subscribe", {
@@ -76,16 +95,22 @@ async function addUserToDatabase(email: string, name: string) {
 }
 
 /**
- * Success Message
- * @returns JSX.Element
+ * Fetch the user from the database via email. This is done
+ * to check if they are already in the database.
+ * @param email Email
+ * @returns boolean
  */
-function SuccessMessage(): JSX.Element {
-  return (
-    <div className="flex flex-col items-center justify-center gap-2 tracking-wide">
-      <h1 className="text-4xl font-black tracking-wide text-primary">
-        Thanks for subscribing!
-      </h1>
-      <p className="mt-1 text-primary">Let&#39;s break some records.</p>
-    </div>
-  );
+async function userAlreadyExists(email: string) {
+  const id = base64encode(email);
+
+  const response = await fetch(`/api/users/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  // If the response is ok, return true - this is because
+  // the user is then already in the database
+  return response.ok;
 }
