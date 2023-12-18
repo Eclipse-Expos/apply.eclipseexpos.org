@@ -3,7 +3,7 @@ import { cn } from "@/utils/cn";
 interface ButtonProps {
   children: string;
   className?: string;
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 /**

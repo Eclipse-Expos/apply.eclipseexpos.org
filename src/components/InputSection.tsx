@@ -53,7 +53,14 @@ export default function InfoInput(): JSX.Element {
   };
 
   return (
-    <div className="relative flex flex-col items-center justify-center gap-4 p-4">
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+
+        await onSubscribe();
+      }}
+      className="relative flex flex-col items-center justify-center gap-4 p-4"
+    >
       {status !== Status.SUCCESS && status !== Status.LOADING && (
         <>
           <Input
@@ -70,12 +77,7 @@ export default function InfoInput(): JSX.Element {
             placeholder="Email"
             onChange={(value: string) => setEmail(value)}
           />
-          <Button
-            className="w-72 sm:w-[32rem]"
-            onClick={async () => await onSubscribe()}
-          >
-            Subscribe
-          </Button>
+          <Button className="w-72 sm:w-[32rem]">Subscribe</Button>
         </>
       )}
 
@@ -94,7 +96,7 @@ export default function InfoInput(): JSX.Element {
       )}
       {status === Status.SUCCESS && <SuccessMessage />}
       {status === Status.LOADING && <LoadingRelative className="mt-10" />}
-    </div>
+    </form>
   );
 }
 

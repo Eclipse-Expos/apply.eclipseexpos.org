@@ -28,12 +28,11 @@ export default function Input(props: InputProps) {
         maxLength={props.maxLength}
         required={props.required}
         spellCheck={true}
+        value={value}
         onChange={(e) => {
           const targetValue: string = e.target.value;
 
-          if (props.onChange) {
-            props.onChange(targetValue);
-          }
+          props.onChange?.(targetValue);
 
           setValue(targetValue);
         }}
