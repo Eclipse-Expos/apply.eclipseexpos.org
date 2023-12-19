@@ -1,17 +1,13 @@
-import MainWrapper from "@/components/Main";
+import MainWrapper from "@/components/MainWrapper";
 import StarBackground from "@/components/StarBackground";
 import Image from "next/image";
-import Head from "next/head";
 import InputSection from "@/components/InputSection";
+import PageHead from "@/components/PageHead";
 
 export default function Home() {
   return (
     <>
-      <Head>
-        <title>Eclipse Expos</title>
-        <meta name="description" content="Eclipse Expos" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <PageHead title="Eclipse Expos" description="Eclipse Expos" />
 
       <StarBackground />
 
