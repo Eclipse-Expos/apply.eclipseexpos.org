@@ -4,8 +4,8 @@ import { Response } from "@/lib/responses";
 import { sendEmail } from "@/lib/email";
 import { createUser } from "@/utils/prisma";
 
-// Subscribe router for trpc
-export const subscribeRouter = createTRPCRouter({
+// Register router for trpc
+export const registerRouter = createTRPCRouter({
   post: publicProcedure
     .input(
       z.object({
@@ -28,7 +28,7 @@ export const subscribeRouter = createTRPCRouter({
       }
 
       // TODO: Eventually pull subject + body from db
-      // await sendEmail(email, "Welcome to Eclipse!", "Let's break some records");
+      await sendEmail(email, "Welcome to Eclipse!", "Let's break some records");
 
       // Return the success body
       return Response.Success;

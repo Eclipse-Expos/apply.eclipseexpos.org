@@ -18,8 +18,8 @@ export default function InfoInput(): JSX.Element {
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
 
-  // Add the user to the database (subscribe)
-  const { mutate } = api.subscribe.post.useMutation();
+  // Add the user to the database (register)
+  const { mutate } = api.register.post.useMutation();
 
   // Get the user from the db
   const { refetch } = api.users.get.useQuery(
@@ -33,10 +33,10 @@ export default function InfoInput(): JSX.Element {
   );
 
   /**
-   * When the user clicks the subscribe button
+   * When the user clicks the register button
    * @returns void
    */
-  const onSubscribe = async (): Promise<void> => {
+  const onRegister = async (): Promise<void> => {
     setStatus(Status.LOADING);
 
     // Check if the user has filled out all fields
@@ -48,7 +48,7 @@ export default function InfoInput(): JSX.Element {
     // Check if the user already exists
     const { data: userData } = await refetch();
     if (userData?.success) {
-      setStatus(Status.ALREADY_SUBSCRIBED);
+      setStatus(Status.ALREADY_REGISTERED);
       return;
     }
 
@@ -75,7 +75,7 @@ export default function InfoInput(): JSX.Element {
       className="relative flex flex-col items-center justify-center gap-4 p-4"
       onSubmit={async (e) => {
         e.preventDefault();
-        await onSubscribe();
+        await onRegister();
       }}
     >
       {status !== Status.SUCCESS && status !== Status.LOADING && (
@@ -94,7 +94,7 @@ export default function InfoInput(): JSX.Element {
             placeholder="Email"
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Button className="w-72 sm:w-[32rem]">Subscribe</Button>
+          <Button className="w-72 sm:w-[32rem]">Pre-register</Button>
         </>
       )}
 
@@ -103,9 +103,9 @@ export default function InfoInput(): JSX.Element {
           An error has occurred. Please try again with a different email.
         </ErrorMessage>
       )}
-      {status === Status.ALREADY_SUBSCRIBED && (
+      {status === Status.ALREADY_REGISTERED && (
         <ErrorMessage>
-          You are already subscribed! Check your email for more information.
+          You are already registered! Check your email for more information.
         </ErrorMessage>
       )}
       {status === Status.EMPTY_FIELDS && (
