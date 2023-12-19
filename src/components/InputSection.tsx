@@ -47,8 +47,7 @@ export default function InfoInput(): JSX.Element {
 
     // Check if the user already exists
     const { data: userData } = await refetch();
-    const userExists = userData?.success;
-    if (userExists) {
+    if (userData?.success) {
       setStatus(Status.ALREADY_SUBSCRIBED);
       return;
     }
