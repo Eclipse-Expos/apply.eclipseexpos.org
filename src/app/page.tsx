@@ -7,8 +7,6 @@ import PageHead from "@/components/PageHead";
 export default function Home() {
   return (
     <>
-      <PageHead title="Eclipse Expos" description="Eclipse Expos" />
-
       <StarBackground />
 
       <MainWrapper>

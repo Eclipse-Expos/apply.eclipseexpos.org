@@ -1,36 +1,31 @@
 "use client";
 
-import { api } from "@/utils/api";
 import { useState } from "react";
-import ErrorMessage from "@/components/ErrorMessage";
-import Button from "@/components/Button";
-import Input from "@/components/Input";
-import SuccessMessage from "@/components/SuccessMessage";
 import { LoadingRelative } from "@/components/Loading";
-import { Status } from "@/lib/types";
+import Input from "@/components/Input";
+import { base64encode } from "@/lib/crypto";
+import SuccessMessage from "@/components/SuccessMessage";
+import ErrorMessage from "@/components/ErrorMessage";
+import Button from "./Button";
+
+// Status of the input
+enum Status {
+  DEFAULT, // Inputs
+  LOADING, // Shows loading components.
+  ERROR, // Requires inputs. Shows error message at bottom.
+  SUCCESS, // Shows success message
+  ALREADY_REGISTERED, // Requires inputs. Shows error message at bottom.
+  EMPTY_FIELDS, // Requires inputs. Shows error message at bottom.
+}
 
 /**
  * Info Input Component
  * @returns JSX.Element
  */
-export default function InfoInput(): JSX.Element {
+export default function InfoInput() {
   const [status, setStatus] = useState<Status>(Status.DEFAULT);
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
-
-  // Add the user to the database (register)
-  const { mutate } = api.register.post.useMutation();
-
-  // Get the user from the db
-  const { refetch } = api.users.get.useQuery(
-    {
-      email,
-    },
-    {
-      enabled: false,
-      refetchOnWindowFocus: false,
-    },
-  );
 
   /**
    * When the user clicks the register button
@@ -46,37 +41,27 @@ export default function InfoInput(): JSX.Element {
     }
 
     // Check if the user already exists
-    const { data: userData } = await refetch();
-    if (userData?.success) {
-      setStatus(Status.ALREADY_REGISTERED);
-      return;
-    }
+    // const userExists = await userAlreadyExists(email);
+    // if (userExists) {
+    //   setStatus(Status.ALREADY_REGISTERED);
+    // const { data: userData } = await refetch();
+    // if (userData?.success) {
+    //   setStatus(Status.ALREADY_REGISTERED);
+    //   return;
+    // }
 
-    // Add the user to the database then Update the status depending
-    // on the mutation success
-    mutate(
-      {
-        email,
-        name,
-      },
-      {
-        onSuccess: (data) => {
-          setStatus(data.success ? Status.SUCCESS : Status.ERROR);
-        },
-        onError: () => {
-          setStatus(Status.ERROR);
-        },
-      },
-    );
+    // Add the user to the database
+    const success = await addUserToDatabase(email, name);
+    setStatus(success ? Status.SUCCESS : Status.ERROR);
   };
 
   return (
     <form
-      className="relative flex flex-col items-center justify-center gap-4 p-4"
       onSubmit={async (e) => {
         e.preventDefault();
         await onRegister();
       }}
+      className="relative flex flex-col items-center justify-center gap-4 p-4"
     >
       {status !== Status.SUCCESS && status !== Status.LOADING && (
         <>
@@ -85,14 +70,14 @@ export default function InfoInput(): JSX.Element {
             className="w-72 sm:w-[32rem]"
             required={true}
             placeholder="Name"
-            onChange={(e) => setName(e.target.value)}
+            onChange={(value: string) => setName(value)}
           />
           <Input
             type="email"
             className="w-72 sm:w-[32rem]"
             required={true}
             placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(value: string) => setEmail(value)}
           />
           <Button className="w-72 sm:w-[32rem]">Pre-register</Button>
         </>
@@ -115,4 +100,53 @@ export default function InfoInput(): JSX.Element {
       {status === Status.LOADING && <LoadingRelative className="mt-10" />}
     </form>
   );
+}
+
+/**
+ * Add the user to the database via the API
+ * @param email Email
+ * @param name Name
+ * @returns boolean
+ */
+async function addUserToDatabase(email: string, name: string) {
+  // Request headers
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  // Request body
+  const body = JSON.stringify({
+    email,
+    name,
+  });
+
+  return await fetch("api/subscribe", {
+    method: "POST",
+    headers,
+    body,
+  })
+    .then((res) => res.json())
+    .then((json) => json.success);
+}
+
+/**
+ * Fetch the user from the database via email. This is done
+ * to check if they are already in the database.
+ * @param email Email
+ * @returns boolean
+ */
+async function userAlreadyExists(email: string) {
+  const id = base64encode(email); // Encode the email
+
+  // Request headers
+  const headers = {
+    "Content-Type": "application/json",
+  };
+
+  // If the response is ok, return true - this is because
+  // the user is then already in the database
+  return await fetch(`/api/users/${id}`, {
+    method: "GET",
+    headers,
+  }).then((res) => res.ok);
 }

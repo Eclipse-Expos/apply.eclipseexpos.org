@@ -1,9 +1,11 @@
+"use client";
+
 import { cn } from "@/utils/cn";
-import { ChangeEvent, useState } from "react";
+import { useState } from "react";
 
 type InputType = "text" | "email" | "password";
 type InputProps = {
-  placeholder?: string;
+  placeholder: string;
   defaultValue?: string;
   className?: string;
   name?: string;
@@ -11,11 +13,11 @@ type InputProps = {
   maxLength?: number;
   disabled?: boolean;
   required?: boolean;
-  onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (value: string) => void;
 };
 
 export default function Input(props: InputProps) {
-  const [value, setValue] = useState<string>("");
+  const [value, setValue] = useState(props.defaultValue || "");
 
   return (
     <div className={cn("group relative", props.className)}>
@@ -26,24 +28,21 @@ export default function Input(props: InputProps) {
         maxLength={props.maxLength}
         required={props.required}
         spellCheck={true}
-        name={props.name}
-        defaultValue={props.defaultValue}
         value={value}
         onChange={(e) => {
-          setValue(e.target.value);
+          const targetValue: string = e.target.value;
 
-          if (props.onChange) {
-            props.onChange(e);
-          }
+          props.onChange?.(targetValue);
+
+          setValue(targetValue);
         }}
       />
 
       <span
         className={cn(
           "font-display pointer-events-none absolute left-0 top-2 z-20 mx-2 my-2 px-2 text-sm font-light tracking-wider text-primary transition-all duration-200 ease-in-out before:absolute before:left-0 before:top-1/2 before:z-[-1] before:h-2 before:w-full before:-translate-y-[1px] before:bg-background before:transition-colors before:duration-300 before:ease-out before:content-[''] peer-focus:-top-[1.2rem] peer-focus:left-1 peer-focus:mx-2 peer-focus:px-2 peer-focus:text-sm",
-          value.length // Keep the label up if there's a value
-            ? "left-1 top-[-1.2rem] mx-2 px-2 text-sm"
-            : "",
+          value && // Keep the label up if there's a value
+            "left-1 top-[-1.2rem] mx-2 px-2 text-sm",
         )}
       >
         {props.placeholder}

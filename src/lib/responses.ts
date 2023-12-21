@@ -6,7 +6,6 @@ export class Response {
     const timestamp = Date.now();
 
     return {
-      status: 200,
       success: true,
       message: "Success",
       timestamp,
@@ -19,7 +18,6 @@ export class Response {
     const timestamp = Date.now();
 
     return {
-      status: 400,
       success: false,
       message: "Invalid query parameters",
       timestamp,
@@ -32,7 +30,6 @@ export class Response {
     const timestamp = Date.now();
 
     return {
-      status: 500,
       success: false,
       message: "Internal server error",
       timestamp,
@@ -40,14 +37,13 @@ export class Response {
     };
   }
 
-  static get InvalidInput() {
+  static get InvalidBody() {
     const id = base64encode(Math.random().toString());
     const timestamp = Date.now();
 
     return {
-      status: 400,
       success: false,
-      message: "Invalid request input",
+      message: "Invalid request body",
       timestamp,
       id,
     };
@@ -58,7 +54,6 @@ export class Response {
     const timestamp = Date.now();
 
     return {
-      status: 405,
       success: false,
       message: "Method not allowed",
       timestamp,
@@ -71,7 +66,6 @@ export class Response {
     const timestamp = Date.now();
 
     return {
-      status: 404,
       success: false,
       message: "Not found",
       timestamp,

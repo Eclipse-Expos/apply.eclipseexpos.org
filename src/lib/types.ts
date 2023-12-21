@@ -3,6 +3,7 @@ export interface User {
   email: string;
   secret: string;
 }
+<<<<<<< HEAD
 
 export enum Status {
   DEFAULT, // Inputs
@@ -12,3 +13,5 @@ export enum Status {
   ALREADY_REGISTERED, // Requires inputs. Shows error message at bottom.
   EMPTY_FIELDS, // Requires inputs. Shows error message at bottom.
 }
+=======
+>>>>>>> parent of 6702473 (feature: converted from router backend to trpc)
