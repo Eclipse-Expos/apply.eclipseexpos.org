@@ -22,7 +22,8 @@
     "react-dom": "^18",
     "sass": "^1.69.5",
     "tailwind-merge": "^2.1.0",
-    "three": "^0.146.0"
+    "three": "^0.146.0",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20",

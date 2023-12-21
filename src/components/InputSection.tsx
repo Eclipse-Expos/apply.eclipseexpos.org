@@ -3,10 +3,11 @@
 import { useState } from "react";
 import { LoadingRelative } from "@/components/Loading";
 import Input from "@/components/Input";
-import { base64encode } from "@/lib/crypto";
 import SuccessMessage from "@/components/SuccessMessage";
 import ErrorMessage from "@/components/ErrorMessage";
 import Button from "./Button";
+import { trpc } from "@/app/_trpc/client";
+import { set } from "zod";
 
 // Status of the input
 enum Status {
@@ -27,6 +28,8 @@ export default function InfoInput() {
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
 
+  const register = trpc.register.useMutation();
+
   /**
    * When the user clicks the register button
    * @returns void
@@ -40,19 +43,22 @@ export default function InfoInput() {
       return;
     }
 
-    // Check if the user already exists
-    // const userExists = await userAlreadyExists(email);
-    // if (userExists) {
-    //   setStatus(Status.ALREADY_REGISTERED);
-    // const { data: userData } = await refetch();
-    // if (userData?.success) {
-    //   setStatus(Status.ALREADY_REGISTERED);
-    //   return;
-    // }
+    try {
+      const user = await register.mutateAsync({
+        email,
+        name,
+      });
 
-    // Add the user to the database
-    const success = await addUserToDatabase(email, name);
-    setStatus(success ? Status.SUCCESS : Status.ERROR);
+      // If the user is null, then the email is already registered
+      if (user === null) {
+        setStatus(Status.ALREADY_REGISTERED);
+        return;
+      }
+
+      setStatus(Status.SUCCESS);
+    } catch {
+      setStatus(Status.ERROR);
+    }
   };
 
   return (
@@ -100,53 +106,4 @@ export default function InfoInput() {
       {status === Status.LOADING && <LoadingRelative className="mt-10" />}
     </form>
   );
-}
-
-/**
- * Add the user to the database via the API
- * @param email Email
- * @param name Name
- * @returns boolean
- */
-async function addUserToDatabase(email: string, name: string) {
-  // Request headers
-  const headers = {
-    "Content-Type": "application/json",
-  };
-
-  // Request body
-  const body = JSON.stringify({
-    email,
-    name,
-  });
-
-  return await fetch("api/subscribe", {
-    method: "POST",
-    headers,
-    body,
-  })
-    .then((res) => res.json())
-    .then((json) => json.success);
-}
-
-/**
- * Fetch the user from the database via email. This is done
- * to check if they are already in the database.
- * @param email Email
- * @returns boolean
- */
-async function userAlreadyExists(email: string) {
-  const id = base64encode(email); // Encode the email
-
-  // Request headers
-  const headers = {
-    "Content-Type": "application/json",
-  };
-
-  // If the response is ok, return true - this is because
-  // the user is then already in the database
-  return await fetch(`/api/users/${id}`, {
-    method: "GET",
-    headers,
-  }).then((res) => res.ok);
 }
