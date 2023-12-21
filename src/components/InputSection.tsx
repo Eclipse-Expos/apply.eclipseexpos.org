@@ -1,36 +1,34 @@
 "use client";
 
-import { api } from "@/utils/api";
 import { useState } from "react";
-import ErrorMessage from "@/components/ErrorMessage";
-import Button from "@/components/Button";
+import { LoadingRelative } from "@/components/Loading";
 import Input from "@/components/Input";
 import SuccessMessage from "@/components/SuccessMessage";
-import { LoadingRelative } from "@/components/Loading";
-import { Status } from "@/lib/types";
+import ErrorMessage from "@/components/ErrorMessage";
+import Button from "./Button";
+import { trpc } from "@/app/_trpc/client";
+import { set } from "zod";
+
+// Status of the input
+enum Status {
+  DEFAULT, // Inputs
+  LOADING, // Shows loading components.
+  ERROR, // Requires inputs. Shows error message at bottom.
+  SUCCESS, // Shows success message
+  ALREADY_REGISTERED, // Requires inputs. Shows error message at bottom.
+  EMPTY_FIELDS, // Requires inputs. Shows error message at bottom.
+}
 
 /**
  * Info Input Component
  * @returns JSX.Element
  */
-export default function InfoInput(): JSX.Element {
+export default function InfoInput() {
   const [status, setStatus] = useState<Status>(Status.DEFAULT);
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
 
-  // Add the user to the database (register)
-  const { mutate } = api.register.post.useMutation();
-
-  // Get the user from the db
-  const { refetch } = api.users.get.useQuery(
-    {
-      email,
-    },
-    {
-      enabled: false,
-      refetchOnWindowFocus: false,
-    },
-  );
+  const register = trpc.register.useMutation();
 
   /**
    * When the user clicks the register button
@@ -45,38 +43,31 @@ export default function InfoInput(): JSX.Element {
       return;
     }
 
-    // Check if the user already exists
-    const { data: userData } = await refetch();
-    if (userData?.success) {
-      setStatus(Status.ALREADY_REGISTERED);
-      return;
-    }
-
-    // Add the user to the database then Update the status depending
-    // on the mutation success
-    mutate(
-      {
+    try {
+      const user = await register.mutateAsync({
         email,
         name,
-      },
-      {
-        onSuccess: (data) => {
-          setStatus(data.success ? Status.SUCCESS : Status.ERROR);
-        },
-        onError: () => {
-          setStatus(Status.ERROR);
-        },
-      },
-    );
+      });
+
+      // If the user is null, then the email is already registered
+      if (user === null) {
+        setStatus(Status.ALREADY_REGISTERED);
+        return;
+      }
+
+      setStatus(Status.SUCCESS);
+    } catch {
+      setStatus(Status.ERROR);
+    }
   };
 
   return (
     <form
-      className="relative flex flex-col items-center justify-center gap-4 p-4"
       onSubmit={async (e) => {
         e.preventDefault();
         await onRegister();
       }}
+      className="relative flex flex-col items-center justify-center gap-4 p-4"
     >
       {status !== Status.SUCCESS && status !== Status.LOADING && (
         <>
@@ -85,14 +76,14 @@ export default function InfoInput(): JSX.Element {
             className="w-72 sm:w-[32rem]"
             required={true}
             placeholder="Name"
-            onChange={(e) => setName(e.target.value)}
+            onChange={(value: string) => setName(value)}
           />
           <Input
             type="email"
             className="w-72 sm:w-[32rem]"
             required={true}
             placeholder="Email"
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(value: string) => setEmail(value)}
           />
           <Button className="w-72 sm:w-[32rem]">Pre-register</Button>
         </>
