@@ -1,22 +1,26 @@
-import InfoInput from "@/components/InputSection";
-import stars from "@/styles/stars.module.scss";
+import MainWrapper from "@/components/MainWrapper";
+import StarBackground from "@/components/StarBackground";
 import Image from "next/image";
+import InputSection from "@/components/InputSection";
+import PageHead from "@/components/PageHead";
 
 export default function Home() {
   return (
     <>
-      <div className={stars.background}></div>
-      <div className={stars.foreground}></div>
+      <StarBackground />
 
-      <main className="flex min-h-screen flex-col items-center justify-center p-24">
+      <MainWrapper>
         <Image
           src="/images/logo-white.png"
           width={700}
           height={700}
-          alt={"..."}
+          alt={"Eclipse Expos"}
+          priority={true}
+          quality={100}
         />
-        <InfoInput />
-      </main>
+
+        <InputSection />
+      </MainWrapper>
     </>
   );
 }

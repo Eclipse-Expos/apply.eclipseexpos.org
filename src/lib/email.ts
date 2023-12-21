@@ -13,7 +13,10 @@ export async function sendEmail(email: string, subject: string, body: string) {
   // message to send
   const msg: sgMail.MailDataRequired = {
     to: email,
-    from: process.env.SENDGRID_SENDER_ID as string,
+    from: {
+      email: process.env.SENDGRID_SENDER_ID as string,
+      name: "Eclipse Expos (No Reply)",
+    },
     subject: subject,
     text: body,
     html: body,
@@ -22,7 +25,7 @@ export async function sendEmail(email: string, subject: string, body: string) {
   try {
     await sgMail.send(msg);
   } catch (error: any) {
-    console.log(error); // log any errors
-    console.log(error.response.body); // log the response body
+    console.error(error); // log any errors
+    console.error(error.response.body); // log the response body
   }
 }

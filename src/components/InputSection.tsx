@@ -3,114 +3,107 @@
 import { useState } from "react";
 import { LoadingRelative } from "@/components/Loading";
 import Input from "@/components/Input";
-import { base64encode } from "@/lib/crypto";
-import SuccessMessage from "./SuccessMessage";
+import SuccessMessage from "@/components/SuccessMessage";
+import ErrorMessage from "@/components/ErrorMessage";
+import Button from "./Button";
+import { trpc } from "@/app/_trpc/client";
+import { set } from "zod";
 
 // Status of the input
 enum Status {
-  DEFAULT,
-  LOADING,
-  ERROR,
-  SUCCESS,
+  DEFAULT, // Inputs
+  LOADING, // Shows loading components.
+  ERROR, // Requires inputs. Shows error message at bottom.
+  SUCCESS, // Shows success message
+  ALREADY_REGISTERED, // Requires inputs. Shows error message at bottom.
+  EMPTY_FIELDS, // Requires inputs. Shows error message at bottom.
 }
 
 /**
  * Info Input Component
  * @returns JSX.Element
  */
-export default function InfoInput(): JSX.Element {
+export default function InfoInput() {
   const [status, setStatus] = useState<Status>(Status.DEFAULT);
   const [email, setEmail] = useState<string>("");
   const [name, setName] = useState<string>("");
 
+  const register = trpc.register.useMutation();
+
+  /**
+   * When the user clicks the register button
+   * @returns void
+   */
+  const onRegister = async (): Promise<void> => {
+    setStatus(Status.LOADING);
+
+    // Check if the user has filled out all fields
+    if (!email || !name) {
+      setStatus(Status.EMPTY_FIELDS);
+      return;
+    }
+
+    try {
+      const user = await register.mutateAsync({
+        email,
+        name,
+      });
+
+      // If the user is null, then the email is already registered
+      if (user === null) {
+        setStatus(Status.ALREADY_REGISTERED);
+        return;
+      }
+
+      setStatus(Status.SUCCESS);
+    } catch {
+      setStatus(Status.ERROR);
+    }
+  };
+
   return (
-    <div className="relative flex flex-col items-center justify-center gap-4 p-4">
-      {status === Status.DEFAULT && (
+    <form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        await onRegister();
+      }}
+      className="relative flex flex-col items-center justify-center gap-4 p-4"
+    >
+      {status !== Status.SUCCESS && status !== Status.LOADING && (
         <>
           <Input
             type="text"
             className="w-72 sm:w-[32rem]"
+            required={true}
             placeholder="Name"
             onChange={(value: string) => setName(value)}
           />
           <Input
             type="email"
             className="w-72 sm:w-[32rem]"
+            required={true}
             placeholder="Email"
             onChange={(value: string) => setEmail(value)}
           />
-          <button
-            onClick={async () => {
-              setStatus(Status.LOADING);
-
-              // Check if the user already exists
-              const userExists = await userAlreadyExists(email);
-              if (userExists) {
-                setStatus(Status.ERROR);
-                return;
-              }
-
-              // Add the user to the database
-              const success = await addUserToDatabase(email, name);
-              setStatus(success ? Status.SUCCESS : Status.DEFAULT);
-            }}
-            className="w-72 border-2 border-primary bg-primary px-2 py-3 text-sm tracking-wider text-slate-900 outline-2 outline-primary duration-300 ease-in-out hover:border-primary hover:bg-background hover:text-primary hover:outline-primary disabled:opacity-50 sm:w-[32rem]"
-          >
-            Subscribe
-          </button>
+          <Button className="w-72 sm:w-[32rem]">Pre-register</Button>
         </>
       )}
 
       {status === Status.ERROR && (
-        <p className="text-center text-sm text-red-600 lg:text-base">
-          You&#39;re already subscribed! Check your email for more information.
-        </p>
+        <ErrorMessage>
+          An error has occurred. Please try again with a different email.
+        </ErrorMessage>
+      )}
+      {status === Status.ALREADY_REGISTERED && (
+        <ErrorMessage>
+          You are already registered! Check your email for more information.
+        </ErrorMessage>
+      )}
+      {status === Status.EMPTY_FIELDS && (
+        <ErrorMessage>Please fill out all fields.</ErrorMessage>
       )}
       {status === Status.SUCCESS && <SuccessMessage />}
       {status === Status.LOADING && <LoadingRelative className="mt-10" />}
-    </div>
+    </form>
   );
-}
-
-/**
- * Add the user to the database via the API
- * @param email Email
- * @param name Name
- * @returns boolean
- */
-async function addUserToDatabase(email: string, name: string) {
-  const response = await fetch("/api/subscribe", {
-    method: "POST",
-    body: JSON.stringify({
-      email,
-      name,
-    }),
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  const json = await response.json();
-  return json && json.success;
-}
-
-/**
- * Fetch the user from the database via email. This is done
- * to check if they are already in the database.
- * @param email Email
- * @returns boolean
- */
-async function userAlreadyExists(email: string) {
-  const id = base64encode(email);
-
-  const response = await fetch(`/api/users/${id}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-
-  // If the response is ok, return true - this is because
-  // the user is then already in the database
-  return response.ok;
 }
