@@ -22,7 +22,7 @@ export default function Input(props: InputProps) {
   return (
     <div className={cn("group relative", props.className)}>
       <input
-        className="peer w-full rounded-none border-2 border-primary bg-background p-3 font-sans font-light text-primary outline-none transition-all duration-200 ease-out placeholder:opacity-50 focus:border-primary disabled:opacity-50"
+        className="peer w-full rounded-none border-2 border-primary bg-background p-3 font-light text-primary outline-none transition-all duration-200 ease-out placeholder:opacity-50 focus:border-primary disabled:opacity-50"
         type={props.type}
         disabled={props.disabled}
         maxLength={props.maxLength}
