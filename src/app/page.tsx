@@ -2,11 +2,10 @@ import MainWrapper from "@/components/MainWrapper";
 import StarBackground from "@/components/StarBackground";
 import Image from "next/image";
 import InputSection from "@/components/InputSection";
-import PageHead from "@/components/PageHead";
 
 export default function Home() {
   return (
-    <>
+    <div className="font-montserrat">
       <StarBackground />
 
       <MainWrapper>
@@ -21,6 +20,6 @@ export default function Home() {
 
         <InputSection />
       </MainWrapper>
-    </>
+    </div>
   );
 }
