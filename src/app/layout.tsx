@@ -3,11 +3,6 @@ import { Poppins } from "next/font/google";
 import "@/styles/globals.scss";
 import Provider from "./_trpc/Provider";
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700"],
-});
-
 export const metadata: Metadata = {
   title: "Eclipse Expos",
   description: "Eclipse Expos",
@@ -20,7 +15,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={poppins.className}>
+      <body className="font-montserrat">
         <Provider>{children}</Provider>
       </body>
     </html>

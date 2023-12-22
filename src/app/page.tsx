@@ -5,7 +5,7 @@ import InputSection from "@/components/InputSection";
 
 export default function Home() {
   return (
-    <div className="font-montserrat">
+    <>
       <StarBackground />
 
       <MainWrapper>
@@ -20,6 +20,6 @@ export default function Home() {
 
         <InputSection />
       </MainWrapper>
-    </div>
+    </>
   );
 }
