@@ -4,6 +4,7 @@ import { cn } from "@/utils/cn";
 
 /**
  * Loading Component (Center)
+ *
  * @returns JSX.Element
  */
 export default function LoadingCenter(): JSX.Element {
@@ -16,7 +17,8 @@ export default function LoadingCenter(): JSX.Element {
 
 /**
  * Loading Component (Relative)
- * @param props
+ *
+ * @param props.className - The class name of the loading spinner
  * @returns JSX.Element
  */
 export function LoadingRelative(props: { className?: string }): JSX.Element {
