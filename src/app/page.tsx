@@ -2,6 +2,7 @@ import MainWrapper from "@/components/MainWrapper";
 import StarBackground from "@/components/StarBackground";
 import Image from "next/image";
 import InputSection from "@/components/InputSection";
+import EclipseLogoSVG from "@/components/svgs/EclipseLogo";
 
 export default function Home() {
   return (
@@ -9,15 +10,7 @@ export default function Home() {
       <StarBackground />
 
       <MainWrapper>
-        <Image
-          src="/images/logo-white.png"
-          width={700}
-          height={700}
-          alt={"Eclipse Expos"}
-          priority={true}
-          quality={100}
-        />
-
+        <EclipseLogoSVG />
         <InputSection />
       </MainWrapper>
     </>
