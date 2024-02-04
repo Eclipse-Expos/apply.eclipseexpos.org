@@ -4,7 +4,7 @@ import { cn } from "@/utils/cn";
 import { useState } from "react";
 
 type InputType = "text" | "email" | "password";
-type InputProps = {
+type InputFieldProps = {
   placeholder: string;
   defaultValue?: string;
   className?: string;
@@ -16,7 +16,7 @@ type InputProps = {
   onChange?: (value: string) => void;
 };
 
-export default function Input(props: InputProps) {
+export default function InputField(props: InputFieldProps) {
   const [value, setValue] = useState(props.defaultValue || "");
 
   return (
