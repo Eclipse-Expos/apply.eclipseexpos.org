@@ -9,6 +9,7 @@ import StarBackground from "@/components/StarBackground";
 import SuccessMessage from "@/components/SuccessMessage";
 import { InputStatus } from "@/types/types";
 import Image from "next/image";
+import EclipseLogoSVG from "@/components/svgs/EclipseLogo";
 import { useState, FormEvent } from "react";
 import { trpc } from "./_trpc/client";
 
@@ -18,15 +19,8 @@ export default function Home() {
       <StarBackground />
 
       <MainWrapper>
-        <Image
-          src="/images/logo-white.png"
-          width={700}
-          height={700}
-          alt={"Eclipse Expos"}
-          priority={true}
-          quality={100}
-        />
         <Components />
+        <EclipseLogoSVG />
       </MainWrapper>
     </>
   );
