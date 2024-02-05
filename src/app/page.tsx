@@ -8,10 +8,10 @@ import MainWrapper from "@/components/MainWrapper";
 import StarBackground from "@/components/StarBackground";
 import SuccessMessage from "@/components/SuccessMessage";
 import { InputStatus } from "@/types/types";
-import Image from "next/image";
 import EclipseLogoSVG from "@/components/svgs/EclipseLogo";
 import { useState, FormEvent } from "react";
 import { trpc } from "./_trpc/client";
+import { TextArea } from "eclipse-components";
 
 export default function Home() {
   return (
@@ -19,8 +19,8 @@ export default function Home() {
       <StarBackground />
 
       <MainWrapper>
-        <Components />
         <EclipseLogoSVG />
+        <Components />
       </MainWrapper>
     </>
   );
