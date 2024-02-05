@@ -1,16 +1,17 @@
 "use client";
 
-import Button from "@/components/Button";
-import ErrorMessage from "@/components/ErrorMessage";
-import InputField from "@/components/InputField";
-import { LoadingRelative } from "@/components/Loading";
-import MainWrapper from "@/components/MainWrapper";
-import StarBackground from "@/components/StarBackground";
-import SuccessMessage from "@/components/SuccessMessage";
 import { InputStatus } from "@/types/types";
-import EclipseLogoSVG from "@/components/svgs/EclipseLogo";
 import { useState, FormEvent } from "react";
 import { trpc } from "./_trpc/client";
+import {
+  TextField,
+  Button,
+  StarBackground,
+  LoadingSpinner,
+  Notification,
+  MainWrapper,
+  EclipseLogoLong,
+} from "eclipse-components";
 
 export default function Home() {
   return (
@@ -18,7 +19,7 @@ export default function Home() {
       <StarBackground />
 
       <MainWrapper>
-        <EclipseLogoSVG />
+        <EclipseLogoLong />
         <Components />
       </MainWrapper>
     </>
@@ -112,19 +113,21 @@ function Components(): JSX.Element {
        */}
       {status !== InputStatus.SUCCESS && status !== InputStatus.LOADING && (
         <>
-          <InputField
+          <TextField
             type="text"
             className="w-72 sm:w-[32rem]"
             required={true}
             placeholder="Name"
-            onChange={(value: string) => setName(value)}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
           />
-          <InputField
+          <TextField
             type="email"
             className="w-72 sm:w-[32rem]"
             required={true}
             placeholder="Email"
-            onChange={(value: string) => setEmail(value)}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
           <Button className="w-72 sm:w-[32rem]">Pre-register</Button>
         </>
@@ -133,37 +136,46 @@ function Components(): JSX.Element {
       {/**
        * If the input is loading, then show the loading spinner
        */}
-      {status === InputStatus.LOADING && <LoadingRelative className="mt-10" />}
+      {status === InputStatus.LOADING && <LoadingSpinner className="mt-10" />}
 
       {/**
        * If an error occurs, then show the error message
        */}
-      {status === InputStatus.ERROR && (
-        <ErrorMessage>
-          An error has occurred. Please try again with a different email.
-        </ErrorMessage>
-      )}
+      <Notification
+        open={status === InputStatus.ERROR}
+        message="An error has occurred. Please try again with a different email."
+        onClose={() => setStatus(InputStatus.DEFAULT)}
+      />
 
       {/**
        * If the user is already registered, then show the error message
        */}
-      {status === InputStatus.ALREADY_REGISTERED && (
-        <ErrorMessage>
-          You are already registered! Check your email for more information.
-        </ErrorMessage>
-      )}
+      <Notification
+        open={status === InputStatus.ALREADY_REGISTERED}
+        message="You are already registered! Check your email for more information."
+        onClose={() => setStatus(InputStatus.DEFAULT)}
+      />
 
       {/**
        * If the user hasn't filled out all the fields, then show the error message
        */}
-      {status === InputStatus.EMPTY_FIELDS && (
-        <ErrorMessage>Please fill out all fields.</ErrorMessage>
-      )}
+      <Notification
+        open={status === InputStatus.EMPTY_FIELDS}
+        message="Please fill out all fields"
+        onClose={() => setStatus(InputStatus.DEFAULT)}
+      />
 
       {/**
        * If the user has successfully registered, then show the success message
        */}
-      {status === InputStatus.SUCCESS && <SuccessMessage />}
+      {status === InputStatus.SUCCESS && (
+        <div className="flex flex-col items-center justify-center gap-2 tracking-wide">
+          <h1 className="text-4xl font-black tracking-wide text-primary">
+            Thanks for registering!
+          </h1>
+          <p className="mt-1 text-primary">Let&#39;s break some records.</p>
+        </div>
+      )}
     </form>
   );
 }
