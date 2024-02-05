@@ -1,8 +1,6 @@
 "use client";
 
-import Button from "@/components/Button";
 import ErrorMessage from "@/components/ErrorMessage";
-import InputField from "@/components/InputField";
 import { LoadingRelative } from "@/components/Loading";
 import MainWrapper from "@/components/MainWrapper";
 import StarBackground from "@/components/StarBackground";
@@ -11,6 +9,7 @@ import { InputStatus } from "@/types/types";
 import EclipseLogoSVG from "@/components/svgs/EclipseLogo";
 import { useState, FormEvent } from "react";
 import { trpc } from "./_trpc/client";
+import { TextField, Button } from "eclipse-components";
 
 export default function Home() {
   return (
@@ -112,19 +111,21 @@ function Components(): JSX.Element {
        */}
       {status !== InputStatus.SUCCESS && status !== InputStatus.LOADING && (
         <>
-          <InputField
+          <TextField
             type="text"
             className="w-72 sm:w-[32rem]"
             required={true}
             placeholder="Name"
-            onChange={(value: string) => setName(value)}
+            value={name}
+            onChange={(e: any) => setName(e.target.value)}
           />
-          <InputField
+          <TextField
             type="email"
             className="w-72 sm:w-[32rem]"
             required={true}
             placeholder="Email"
-            onChange={(value: string) => setEmail(value)}
+            value={email}
+            onChange={(e: any) => setEmail(e.target.value)}
           />
           <Button className="w-72 sm:w-[32rem]">Pre-register</Button>
         </>
