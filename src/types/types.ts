@@ -17,9 +17,8 @@ export interface User {
 }
 
 /**
- * Status enumeration
+ * Input status
  */
-// Status of the input
 export enum InputStatus {
   /**
    * The input is in its default state.

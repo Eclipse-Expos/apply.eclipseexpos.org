@@ -16,7 +16,7 @@
     "@trpc/server": "^10.44.1",
     "@types/eslint": "^8.44.9",
     "clsx": "^2.0.0",
-    "eclipse-components": "^0.0.137",
+    "eclipse-components": "^0.0.140",
     "next": "14.0.4",
     "prettier-plugin-tailwindcss": "^0.5.9",
     "react": "^18",
