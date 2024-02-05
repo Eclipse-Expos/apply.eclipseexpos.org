@@ -11,7 +11,6 @@ import { InputStatus } from "@/types/types";
 import EclipseLogoSVG from "@/components/svgs/EclipseLogo";
 import { useState, FormEvent } from "react";
 import { trpc } from "./_trpc/client";
-import { TextArea } from "eclipse-components";
 
 export default function Home() {
   return (
