@@ -10,7 +10,7 @@ import {
   LoadingSpinner,
   Notification,
   MainWrapper,
-  EclipseLogoLong,
+  EclipseLogoTextOrbGlow,
 } from "eclipse-components";
 
 export default function Home() {
@@ -19,7 +19,7 @@ export default function Home() {
       <StarBackground />
 
       <MainWrapper>
-        <EclipseLogoLong />
+        <EclipseLogoTextOrbGlow />
         <Components />
       </MainWrapper>
     </>
