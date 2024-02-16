@@ -10,7 +10,7 @@ import {
   LoadingSpinner,
   Notification,
   MainWrapper,
-  EclipseLogoLong,
+  EclipseLogoTextOrbGlow,
 } from "eclipse-components";
 import { getSessionUser } from "@/lib/user/getSessionUser";
 import { set } from "zod";
@@ -21,7 +21,7 @@ export default function Home() {
       <StarBackground />
 
       <MainWrapper>
-        <EclipseLogoLong />
+        <EclipseLogoTextOrbGlow />
         <Components />
       </MainWrapper>
     </>
