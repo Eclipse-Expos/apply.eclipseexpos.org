@@ -131,7 +131,7 @@ function Components(): JSX.Element {
           <div className="flex w-72 flex-row gap-4 sm:w-[32rem] sm:flex-col">
             <TextField
               type="text"
-              className=""
+              className="w-full"
               required={true}
               placeholder="First Name"
               value={firstName}
@@ -139,7 +139,7 @@ function Components(): JSX.Element {
             />
             <TextField
               type="text"
-              className=""
+              className="w-full"
               required={true}
               placeholder="Last Name"
               value={lastName}
