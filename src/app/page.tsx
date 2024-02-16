@@ -20,8 +20,8 @@ export default function Home() {
     <>
       <StarBackground />
 
-      <MainWrapper>
-        <EclipseLogoTextOrbGlow />
+      <MainWrapper className="overflow-clip">
+        <EclipseLogoTextOrbGlow className="z-10 h-24 sm:h-40" />
         <Components />
       </MainWrapper>
     </>
