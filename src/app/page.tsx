@@ -1,7 +1,7 @@
 "use client";
 
 import { InputStatus } from "@/types/types";
-import { useState, FormEvent } from "react";
+import { useState, FormEvent, useEffect } from "react";
 import { trpc } from "./_trpc/client";
 import {
   TextField,
@@ -12,6 +12,8 @@ import {
   MainWrapper,
   EclipseLogoTextOrbGlow,
 } from "eclipse-components";
+import { getSessionUser } from "@/lib/user/getSessionUser";
+import { set } from "zod";
 
 export default function Home() {
   return (
@@ -37,7 +39,8 @@ function Components(): JSX.Element {
    */
   const [status, setStatus] = useState<InputStatus>(InputStatus.DEFAULT);
   const [email, setEmail] = useState<string>("");
-  const [name, setName] = useState<string>("");
+  const [firstName, setFirstName] = useState<string>("");
+  const [lastName, setLastName] = useState<string>("");
 
   /**
    * tRPC Mutation for registering a user
@@ -64,7 +67,7 @@ function Components(): JSX.Element {
      *
      * This will show an error message to the user
      */
-    if (!email || !name) {
+    if (!email || !firstName || !lastName) {
       setStatus(InputStatus.EMPTY_FIELDS);
       return;
     }
@@ -78,7 +81,8 @@ function Components(): JSX.Element {
        */
       const user = await register.mutateAsync({
         email,
-        name,
+        firstName,
+        lastName,
       });
 
       /**
@@ -100,6 +104,17 @@ function Components(): JSX.Element {
     }
   };
 
+  useEffect(() => {
+    getSessionUser().then((user) => {
+      console.log(user);
+      if (user) {
+        setFirstName(user.firstName);
+        setLastName(user.lastName);
+        setEmail(user.email);
+      }
+    });
+  }, []);
+
   /**
    * Return the main form
    */
@@ -113,14 +128,24 @@ function Components(): JSX.Element {
        */}
       {status !== InputStatus.SUCCESS && status !== InputStatus.LOADING && (
         <>
-          <TextField
-            type="text"
-            className="w-72 sm:w-[32rem]"
-            required={true}
-            placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
+          <div className="flex w-72 flex-row gap-4 sm:w-[32rem] sm:flex-col">
+            <TextField
+              type="text"
+              className=""
+              required={true}
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+            <TextField
+              type="text"
+              className=""
+              required={true}
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </div>
           <TextField
             type="email"
             className="w-72 sm:w-[32rem]"

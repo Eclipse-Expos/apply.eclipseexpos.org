@@ -8,7 +8,8 @@ export const appRouter = router({
     .input(
       // Input validation with zod
       z.object({
-        name: z.string().min(1).max(255),
+        firstName: z.string().min(1).max(255),
+        lastName: z.string().min(1).max(255),
         email: z.string().min(1).max(255),
       }),
     )
@@ -16,7 +17,8 @@ export const appRouter = router({
       try {
         const user = await prisma.user.create({
           data: {
-            name: opts.input.name,
+            firstName: opts.input.firstName,
+            lastName: opts.input.lastName,
             email: opts.input.email,
           },
         });
