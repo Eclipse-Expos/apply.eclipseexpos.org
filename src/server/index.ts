@@ -14,27 +14,61 @@ export const appRouter = router({
       }),
     )
     .mutation(async (opts) => {
-      try {
-        const user = await prisma.user.create({
-          data: {
-            firstName: opts.input.firstName,
-            lastName: opts.input.lastName,
-            email: opts.input.email,
-          },
-        });
+      // Check if user already exists
+      const user = await prisma.user.findUnique({
+        where: {
+          email: opts.input.email,
+        },
+        include: {
+          mailingList: true,
+        },
+      });
 
-        await sendEmail(
-          user.email,
-          "Welcome to Eclipse!",
-          "Let's break some records",
-        );
+      if (user) {
+        if (user.mailingList) {
+          return null;
+        } else {
+          await prisma.mailingList.create({
+            data: {
+              user: {
+                connect: {
+                  id: user.id,
+                },
+              },
+
+              preRegistered: true,
+            },
+          });
+        }
 
         return user;
-      } catch (e) {
-        // This will only happen if the email is already taken (or db isn't running).
-        console.warn(`User with email ${opts.input.email} already exists.`);
-        return null;
       }
+
+      // If user doesn't exist, create them
+
+      const newUser = await prisma.user.create({
+        data: {
+          firstName: opts.input.firstName,
+          lastName: opts.input.lastName,
+          email: opts.input.email,
+
+          mailingList: {
+            create: {
+              preRegistered: true,
+            },
+          },
+        },
+      });
+
+      // Send welcome email
+
+      await sendEmail(
+        newUser.email,
+        "Welcome to Eclipse!",
+        "Let's break some records",
+      );
+
+      return newUser;
     }),
 });
 
