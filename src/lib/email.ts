@@ -1,4 +1,5 @@
 import sgMail from "@sendgrid/mail";
+import crypto from "crypto";
 
 /*
  * Send an email to the given email address
@@ -6,7 +7,12 @@ import sgMail from "@sendgrid/mail";
  * @param subject The subject of the email
  * @param body The body of the email
  */
-export async function sendEmail(email: string, subject: string, body: string) {
+export async function sendEmail(
+  email: string,
+  subject: string,
+  body: string,
+  html?: string,
+) {
   // set the api key
   sgMail.setApiKey(process.env.SENDGRID_API_KEY as string);
 
@@ -15,11 +21,14 @@ export async function sendEmail(email: string, subject: string, body: string) {
     to: email,
     from: {
       email: process.env.SENDGRID_SENDER_ID as string,
-      name: "Eclipse Expos (No Reply)",
+      name: "Eclipse Expos",
     },
     subject: subject,
     text: body,
-    html: body,
+    html: html ? html : body,
+    headers: {
+      "In-Reply-To": crypto.randomUUID(),
+    },
   };
 
   try {

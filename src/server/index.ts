@@ -2,6 +2,10 @@ import { prisma } from "@/lib/prisma";
 import { publicProcedure, router } from "./trpc";
 import { z } from "zod";
 import { sendEmail } from "@/lib/email";
+import {
+  preRegisterEmail,
+  preRegisterEmailText,
+} from "@/emails/preRegisterEmail";
 
 export const appRouter = router({
   register: publicProcedure
@@ -26,7 +30,8 @@ export const appRouter = router({
         await sendEmail(
           user.email,
           "Welcome to Eclipse!",
-          "Let's break some records",
+          preRegisterEmailText(user.firstName),
+          preRegisterEmail(user.firstName),
         );
 
         return user;
