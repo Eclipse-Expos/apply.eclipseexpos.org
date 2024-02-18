@@ -2,7 +2,7 @@ import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
 const useSecureCookies = (process.env.NEXTAUTH_URL as string).startsWith(
-  "https://"
+  "https://",
 );
 const cookiePrefix = useSecureCookies ? "__Secure-" : "";
 const hostName = new URL(process.env.NEXTAUTH_URL as string).hostname;
@@ -30,10 +30,8 @@ export const options: NextAuthOptions = {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify(credentials),
-            }
+            },
           );
-
-          // console.log(await res.json());
 
           const data = await res.json();
 
