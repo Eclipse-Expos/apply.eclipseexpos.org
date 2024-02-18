@@ -14,6 +14,7 @@ import {
 } from "eclipse-components";
 import { getSessionUser } from "@/lib/user/getSessionUser";
 import { set } from "zod";
+import { stringTitle } from "@/utils/stringTitle";
 
 export default function Home() {
   return (
@@ -76,14 +77,16 @@ function Components(): JSX.Element {
      * Try to register the user
      */
     try {
+      const cleanedProperties = {
+        email: email.trim().toLowerCase(),
+        firstName: stringTitle(firstName.trim()),
+        lastName: stringTitle(lastName.trim()),
+      };
+
       /**
        * If the user is already registered, then the user will be null
        */
-      const user = await register.mutateAsync({
-        email,
-        firstName,
-        lastName,
-      });
+      const user = await register.mutateAsync(cleanedProperties);
 
       /**
        * If the user is null, then set the status to already registered
@@ -106,7 +109,6 @@ function Components(): JSX.Element {
 
   useEffect(() => {
     getSessionUser().then((user) => {
-      console.log(user);
       if (user) {
         setFirstName(user.firstName);
         setLastName(user.lastName);
