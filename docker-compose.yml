@@ -24,6 +24,8 @@ services:
       - MYSQL_HOST=database
       - DATABASE_URL=${DATABASE_URL}
       - TZ=${TZ}
+    volumes:
+      - "./upload/:/usr/app/upload/"
 
     depends_on:
       - database
