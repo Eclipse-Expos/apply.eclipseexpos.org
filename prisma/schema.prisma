@@ -45,3 +45,22 @@ model MailingList {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model HiringApplication {
+  id String @id @default(uuid())
+
+  firstName String
+  lastName  String
+  email     String
+
+  dateOfBirth DateTime
+  institution String
+
+  resumePath    String
+  resumeName    String
+  portfolioPath String?
+  portfolioName String?
+
+  aboutAnswer  String
+  recordAnswer String
+}
