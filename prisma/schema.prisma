@@ -16,6 +16,7 @@ model User {
 
   auth        Auth?
   mailingList MailingList?
+  permissions UserPermission?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -63,4 +64,26 @@ model HiringApplication {
 
   aboutAnswer  String
   recordAnswer String
+}
+
+model UserPermission {
+  id String @id @default(uuid())
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String @unique
+
+  // Permissions
+
+  // Basic
+  canAccessDashboard Boolean @default(true)
+
+  // Admin
+  canAccessAdmin              Boolean @default(false)
+  canManageUsers              Boolean @default(false)
+  canManageMailingList        Boolean @default(false)
+  canManageHiringApplications Boolean @default(false)
+  isSuperAdmin                Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

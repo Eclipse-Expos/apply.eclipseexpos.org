@@ -1,3 +1,5 @@
+import { Prisma } from "@prisma/client";
+
 /**
  * User interface
  */
@@ -55,3 +57,8 @@ export enum InputStatus {
    */
   EMPTY_FIELDS,
 }
+
+export type UserPermission = keyof Omit<
+  Prisma.UserPermissionGetPayload<{}>,
+  "id" | "userId" | "createdAt" | "updatedAt"
+>;
