@@ -18,13 +18,16 @@ model User {
   mailingList MailingList?
   permissions UserPermission?
 
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  LoginAttempt LoginAttempt[]
 }
 
 model Auth {
   id           String @id @default(uuid())
   passwordHash String @db.VarChar(255)
+
+  emailVerified Boolean @default(false)
 
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   userId String @unique
@@ -37,7 +40,7 @@ model MailingList {
   id String @id @default(uuid())
 
   // Link to User
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   userId String @unique
 
   // Enrolled Options
@@ -64,12 +67,15 @@ model HiringApplication {
 
   aboutAnswer  String
   recordAnswer String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
 }
 
 model UserPermission {
   id String @id @default(uuid())
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
   userId String @unique
 
   // Permissions
@@ -83,6 +89,19 @@ model UserPermission {
   canManageMailingList        Boolean @default(false)
   canManageHiringApplications Boolean @default(false)
   isSuperAdmin                Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LoginAttempt {
+  id String @id @default(uuid())
+
+  email String
+  ip    String
+
+  associatedUserId String?
+  associatedUser   User?   @relation(fields: [associatedUserId], references: [id], onDelete: SetNull, onUpdate: NoAction)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
