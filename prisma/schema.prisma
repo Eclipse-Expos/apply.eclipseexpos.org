@@ -100,9 +100,18 @@ model LoginAttempt {
   email String
   ip    String
 
-  associatedUserId String?
+  result LoginResult
+
+  associatedUserId String? // If the user is found, we can associate the user with the attempt
   associatedUser   User?   @relation(fields: [associatedUserId], references: [id], onDelete: SetNull, onUpdate: NoAction)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+}
+
+enum LoginResult {
+  SUCCESS
+  INVALID_PASSWORD
+  USER_NOT_FOUND
+  TOO_MANY_ATTEMPTS
 }
