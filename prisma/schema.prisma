@@ -115,3 +115,20 @@ enum LoginResult {
   USER_NOT_FOUND
   TOO_MANY_ATTEMPTS
 }
+
+model AttendApplication {
+  id String @id @default(uuid())
+
+  firstName String
+  lastName  String
+  email     String
+
+  dateOfBirth DateTime
+  institution String
+
+  aboutAnswer  String
+  recordAnswer String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now()) @updatedAt
+}
